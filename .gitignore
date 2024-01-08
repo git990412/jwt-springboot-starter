@@ -37,3 +37,4 @@ out/
 .vscode/
 medium.lock.db
 medium.mv.db
+/medium.trace.db
