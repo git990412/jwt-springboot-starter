@@ -1,5 +1,6 @@
 server:
   port: 8090
+  address: localhost
 spring:
   datasource:
     url: jdbc:h2:./medium;MODE=MYSQL;AUTO_SERVER=TRUE

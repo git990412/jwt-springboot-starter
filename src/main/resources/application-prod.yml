@@ -1,0 +1,9 @@
+server:
+  address: domain.com
+  port: 8080
+spring:
+  datasource:
+    username: username
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://address:3306/database_name
