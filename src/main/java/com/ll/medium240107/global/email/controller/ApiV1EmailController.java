@@ -5,7 +5,9 @@ import com.ll.medium240107.global.email.service.MailService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,19 +29,26 @@ public class ApiV1EmailController {
     @Value("${server.port}")
     private String serverPort;
 
+    @Autowired
+    private Environment environment;
+
     @PostMapping("/sendVerify")
     public ResponseEntity<?> verifyEmail(@RequestParam("email") @Valid @Email String email) {
         String title = "이메일 인증 링크입니다.";
         String uuid = UUID.randomUUID().toString();
         String authCode = passwordEncoder.encode(uuid);
 
-        String env = System.getProperty("app.environment"); // 'dev' 또는 'prod'로 설정된 시스템 프로퍼티
-
         String portPart = "";
-        if ("dev".equals(env)) {
-            portPart = ":" + serverPort;
+
+        String[] activeProfiles = environment.getActiveProfiles();
+
+        for (String profile : activeProfiles) {
+            if ("dev".equals(profile)) {
+                portPart = ":" + serverPort;
+                break; // dev 프로필을 찾았으니 더 이상 루프를 돌 필요가 없습니다.
+            }
         }
-        
+
         String authUrl = "http://" + serverAddress + portPart + "/api/v1/email/verify?email=" + email + "&authCode=" + uuid;
 
         mailService.findByEmail(email)
