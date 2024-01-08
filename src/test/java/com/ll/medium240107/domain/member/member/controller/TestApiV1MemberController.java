@@ -5,6 +5,8 @@ import com.ll.medium240107.domain.member.member.entity.Member;
 import com.ll.medium240107.domain.member.member.form.JoinForm;
 import com.ll.medium240107.domain.member.member.form.LoginForm;
 import com.ll.medium240107.domain.member.member.repository.MemberRepository;
+import com.ll.medium240107.global.email.entity.AuthEmail;
+import com.ll.medium240107.global.email.repository.EmailRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,12 +40,22 @@ public class TestApiV1MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private EmailRepository mailRepository;
+
     private final String email = "test@gmail.com";
     private final String password = "12345678";
 
     @Test
     @DisplayName("회원가입")
     void t0() throws Exception {
+        mailRepository.save(AuthEmail.builder()
+                .authCode("123456")
+                .expiredDate(null)
+                .email(email)
+                .isVerified(true)
+                .build());
+
         JoinForm joinForm = JoinForm.builder()
                 .email(email)
                 .username("test")

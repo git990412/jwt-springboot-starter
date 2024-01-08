@@ -8,7 +8,9 @@ spring:
       max-request-size: 20MB
   profiles:
     active: dev
-    include: secret
+    include:
+      - secret
+      - mail
   jpa:
     hibernate:
       ddl-auto: update
